@@ -1,7 +1,9 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext({});
 
@@ -10,6 +12,16 @@ function AuthProvider({children}){
     const [loadingAuth, setLoadingAuth] = useState(false);
     const navigation = useNavigation();
 
+
+    useEffect(() => {
+        async function loadStorage(){
+            const storageUser = await AsyncStorage.getItem('@findToken');
+
+            if(storageUser){
+                
+            }
+        }
+    }, [])
 
     async function signUp(nome, email, password){
         setLoadingAuth(true);
@@ -46,7 +58,9 @@ function AuthProvider({children}){
                 token,
                 email,
             };
-
+            
+            await AsyncStorage.setItem('@findToken', token)
+            
             api.defaults.headers['Authorization'] = `Bearer ${token}`;
             
             setUser({
